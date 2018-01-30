@@ -1,3 +1,4 @@
+
 'use strict';
 const express = require('express');
 
@@ -5,11 +6,25 @@ const data = require('./db/notes');
 
 const app = express();
 
+const { PORT } = require ('./config');
+
 app.use(express.static('public'));
+
+
+// middlewar
+
+// Middleware - app level
+
+const { seeHereLogger } = require('./middlewares/ExportMiddleware.js');
+
+app.use(seeHereLogger);
+
+app.listen(process.env.PORT || 8082);
+
 
 //Listen for incoming connections
 
-app.listen(8080, function() {
+app.listen(PORT, function() {
   console.info(`Server listening on ${this.address().port}`);
 }).on('error', err => {
   console.log(err);
@@ -31,6 +46,14 @@ app.get('/v1/notes/', (req, res) => {
   req.query.searchTerm ? 
     res.json(data.filter(item => item.title.includes(req.query.searchTerm)))
     : res.json(data);
+
+
+  app.use(function (req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    res.status(404).json({ message: 'Not found'});
+  });
+
 
 //   res.json(newData);
 //   console.log(res.json(newData));
