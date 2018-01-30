@@ -1,34 +1,22 @@
 
 'use strict';
 const express = require('express');
-
 const data = require('./db/notes');
-
 const app = express();
-
 const { PORT } = require ('./config');
+const { seeHereLogger } = require('./middlewares/ExportMiddleware.js');
+const simDB = require('./db/simDB');
+const notes = simDB.initialize(data);
 
 app.use(express.static('public'));
-
-
-// middlewar
+app.use(express.json());
 
 // Middleware - app level
-
-const { seeHereLogger } = require('./middlewares/ExportMiddleware.js');
-
 app.use(seeHereLogger);
 
-app.listen(process.env.PORT || 8082);
 
 
 //Listen for incoming connections
-
-app.listen(PORT, function() {
-  console.info(`Server listening on ${this.address().port}`);
-}).on('error', err => {
-  console.log(err);
-});
  
 // INSERT EXPRESS APP CODE HERE...
 
@@ -37,27 +25,86 @@ app.listen(PORT, function() {
 //   console.log(data);
 // });
 
-app.get('/v1/notes/:id', (req, res) => {
-  res.json(data.find(item => item.id === parseInt(req.params.id, 10)));
+//find ID
+
+app.get('/v1/notes/:id', (req, res, next) => {
+  const { id } = req.params;
+  notes.find(id, (err, item) => {
+    if (err) {
+      return next(err);
+    }
+    if (item) {
+      res.json(item);
+    } else {
+      next();
+    }
+  });
+  //res.json(data.find(item => item.id === parseInt(req.params.id, 10)));
 });
 
+//filter
 
-app.get('/v1/notes/', (req, res) => { 
-  req.query.searchTerm ? 
-    res.json(data.filter(item => item.title.includes(req.query.searchTerm)))
-    : res.json(data);
+app.get('/v1/notes/', (req, res, next) => { 
+  const { searchTerm } = req.query;
 
-
-  app.use(function (req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    res.status(404).json({ message: 'Not found'});
+  notes.filter(searchTerm, (err, list) => {
+    if (err) {
+      return next(err);
+    }
+    res.json(list);
   });
+});
+
+app.put('/v1/notes/:id', (req, res, next) => {
+  const id = req.params.id;
+
+  /***** Never trust users - validate input *****/
+  const updateObj = {};
+  const updateFields = ['title', 'content'];
+
+  updateFields.forEach(field => {
+    if (field in req.body) {
+      updateObj[field] = req.body[field];
+    }
+  });
+
+  notes.update(id, updateObj, (err, item) => {
+    if (err) {
+      return next(err);
+    }
+    if (item) {
+      res.json(item);
+    } else {
+      next();
+    }
+  });
+});
+
+app.get('/boom', (req, res, next) => {
+  throw new Error('Boom!!');
+});
+
+app.use(function (req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  res.status(404).json({ message: 'Not found'});
+});
+
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+  res.json({
+    message: err.message,
+    error: err
+  });
+});
 
 
 //   res.json(newData);
 //   console.log(res.json(newData));
 // //   console.log(req.query);
 
-//when i search a term, I want that term to go through all other data in API, and match any matching strings
+app.listen(PORT, function () {
+  console.info(`Server listening on ${this.address().port}`);
+}).on('error', err => {
+  console.log(err);
 });

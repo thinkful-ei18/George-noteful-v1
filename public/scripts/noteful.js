@@ -63,9 +63,35 @@ const noteful = (function () {
     });
   }
 
+  function handleNoteFormSubmit() {
+    $('.js-note-edit-form').on('submit', function (event) {
+      event.preventDefault();
+      console.log(store.currentNote);
+
+      const editForm = $(event.currentTarget);
+
+      const noteObj = {
+        title: editForm.find('.js-note-title-entry').val(),
+        content: editForm.find('.js-note-content-entry').val()
+      };
+
+      noteObj.id = store.currentNote.id;
+
+      api.update(noteObj.id, noteObj, updateResponse => {
+        store.currentNote = updateResponse;
+        store.currentNote.title = noteObj.title; 
+        render();
+      });
+
+      console.log(store.currentNote);
+
+    });
+  }
+
   function bindEventListeners() {
     handleNoteItemClick();
     handleNoteSearchSubmit();
+    handleNoteFormSubmit();
   }
 
   // This object contains the only exposed methods from this module:

@@ -9,4 +9,8 @@ $(document).ready(function () {
     noteful.render();
   });
 
+  api.update({}, updateResponse => {
+    store.currentNotes = updateResponse;
+    noteful.render();
+  });
 });
