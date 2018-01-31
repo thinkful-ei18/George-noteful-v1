@@ -9,8 +9,12 @@ $(document).ready(function () {
     noteful.render();
   });
 
-  api.update({}, updateResponse => {
-    store.currentNotes = updateResponse;
-    noteful.render();
-  });
+  
 });
+
+// $(document).on('click', submit() {
+//   api.update({}, updateResponse => {
+//     store.currentNotes = updateResponse;
+//     noteful.render();
+//   });
+// })
