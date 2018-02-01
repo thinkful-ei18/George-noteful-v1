@@ -2,6 +2,13 @@
 'use strict';
 
 const api = {
+
+  delete: function (id) {
+    return $.ajax({
+      url: 'v1/notes',
+      method: 'DELETE'
+    });
+  },
   
   search: function (query) {
     return $.ajax({

@@ -20,6 +20,7 @@ const noteful = (function () {
     const listItems = list.map(item => `
     <li data-id="${item.id}" class="js-note-element ${currentNote.id === item.id ? 'active' : ''}">
       <a href="#" class="name js-note-show-link">${item.title}</a>
+      <button class="removeBtn js-note-delete-button">X</button>
     </li>`);
     return listItems.join('');
   }
@@ -132,6 +133,22 @@ const noteful = (function () {
     });
   }
 
+  function handleDeleteItemClicked() {
+    // this function will be responsible for when users want to delete a shopping list
+    $('.js-shopping-list').on('click', '.js-item-delete', event => {
+      console.log('`handleDeleteItemClicked` ran');
+      // grab current element's location, place into constant
+      const itemIndex = getItemIndexFromElement(event.currentTarget);
+      console.log(itemIndex);
+      // delete item from array
+      // 1. take STORE
+      // 2. splice STORE
+      // 3. run renderShoppingList()
+      STORE.item.splice(itemIndex, 1);
+      renderShoppingList();
+    });
+  }
+  
   function bindEventListeners() {
     handleNoteItemClick();
     handleNoteSearchSubmit();
