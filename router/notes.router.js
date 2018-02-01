@@ -8,31 +8,51 @@ const notes = simDB.initialize(data);
 
 router.get('/notes/:id', (req, res, next) => {
   const { id } = req.params;
-  notes.find(id, (err, item) => {
-    if (err) {
-      return next(err);
-    }
-    if (item) {
-      res.json(item);
-    } else {
-      next();
-    }
-  });
-  //res.json(data.find(item => item.id === parseInt(req.params.id, 10)));
+  // notes.find(id, (err, item) => {
+  //   if (err) {
+  //     return next(err);
+  //   }
+  //   if (item) {
+  //     res.json(item);
+  //   } else {
+  //     next();
+  //   }
+
+  notes.find(id)
+    .then(item => {
+      if (item) {
+        res.json(item);
+      } else {
+        next();
+      }
+    })
+    .catch(err => next(err));
 });
+//res.json(data.find(item => item.id === parseInt(req.params.id, 10)));
 
 //filter
 
 router.get('/notes/', (req, res, next) => {
   const { searchTerm } = req.query;
 
-  notes.filter(searchTerm, (err, list) => {
-    if (err) {
-      return next(err);
-    }
-    res.json(list);
-  });
+  // notes.filter(searchTerm, (err, list) => {
+  //   if (err) {
+  //     return next(err);
+  //   }
+  //   res.json(list);
+  // });
+
+  notes.filter(searchTerm)
+    .then(list => {
+      if (list) {
+        res.json(list);
+      } else {
+        next();
+      }
+    })
+    .catch(err => next(err));
 });
+
 
 router.put('/notes/:id', (req, res, next) => {
   const id = req.params.id;
@@ -47,16 +67,24 @@ router.put('/notes/:id', (req, res, next) => {
     }
   });
 
-  notes.update(id, updateObj, (err, item) => {
-    if (err) {
-      return next(err);
-    }
-    if (item) {
-      res.json(item);
-    } else {
-      next();
-    }
-  });
+  // notes.update(id, updateObj, (err, item) => {
+  //   if (err) {
+  //     return next(err);
+  //   }
+  //   if (item) {
+  //     res.json(item);
+  //   } else {
+  //     next();
+  //   }
+
+  notes.update(id, updateObj)
+    .then(item => {
+      if (item) {
+        res.json(item);
+      } else {
+        next();
+      }
+    }).catch(err => next(err));
 });
 
 router.post('/notes', (req, res, next) => {

@@ -137,6 +137,7 @@ const noteful = (function () {
     handleNoteSearchSubmit();
     handleNoteFormSubmit();
     handleNoteStartNewSubmit();
+    //handleNoteDeleteClick();
   }
 
   // This object contains the only exposed methods from this module:
