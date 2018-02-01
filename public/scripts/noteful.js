@@ -41,13 +41,14 @@ const noteful = (function () {
 
       const noteId = getNoteIdFromElement(event.currentTarget);
 
-      api.details(noteId, response => {
-        store.currentNote = response;
-        render();
-      });
-
+      api.details(noteId)
+        .then(response => {
+          store.currentNote = response;
+          render();
+        });
     });
   }
+  
 
   function handleNoteStartNewSubmit() {
     $('.js-start-new-note-form').on('submit', event => {
@@ -97,14 +98,13 @@ const noteful = (function () {
 
       } else {
 
-        api.create(noteObj)
-          .then(updateResponse => {
-            store.currentNote = updateResponse;
+        api.create(noteObj, updateResponse => {
+          store.currentNote = updateResponse;
 
-            api.search(store.currentSearchTerm, updateResponse => {
-              store.notes = updateResponse;
-              render();
-            });)
+          api.search(store.currentSearchTerm, updateResponse => {
+            store.notes = updateResponse;
+            render();
+          });
 
         });
       }
