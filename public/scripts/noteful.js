@@ -134,8 +134,9 @@ const noteful = (function () {
   }
 
   function handleNoteDeleteClick() {
+    console.log('hello world');
     // this function will be responsible for when users want to delete a shopping list
-    $('js-note-delete-button').on('click', event => {
+    $('.js-notes-list').on('click', '.js-note-delete-button', event => {
       console.log('handleNoteDeleteClicked ran');
       // grab current element's location, place into constant
       const noteID = getNoteIdFromElement(event.currentTarget);
@@ -145,20 +146,11 @@ const noteful = (function () {
       api.delete(noteID)
         .then(response => {
           store.currentNote = response;
-
-          // need something to get this out of store
+          return api.search(store.currentSearchTerm);
+        }).then(response => {
+          store.notes = response;
           render();
         });
-      // delete item from array
-      // 1. take STORE
-      // 2. splice STORE
-      // // 3. run renderShoppingList()
-      // STORE.item.splice(itemIndex, 1);
-      // renderShoppingList();
-    
-
-    //api.delete(noteObj)
-    //.then
     });
   }
 

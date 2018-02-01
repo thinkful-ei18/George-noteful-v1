@@ -123,20 +123,19 @@ router.post('/notes', (req, res, next) => {
 
 /* Delete an item */
 
-router.delete('/notes', (req, res, next) => {
-  const { title, content } = req.body;
+router.delete('/notes/:id', (req, res, next) => {
+  const id = req.params.id;
 
-  const newItem = { title, content };
-
-  notes.delete(newItem) 
-  .then(item => {
-  if (item) {
-    res.json(item);
-  } else {
-    next();
-  }
-  }).catch(err => {
-    console.log(err);
+  notes.delete(id) 
+    .then(item => {
+      if (item) {
+        res.json(item);
+      } else {
+        next();
+      }
+    }).catch(err => {
+      console.log(err);
+    });
 });
 
 

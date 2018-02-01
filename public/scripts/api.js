@@ -5,8 +5,8 @@ const api = {
 
   delete: function (id) {
     return $.ajax({
-      url: 'v1/notes',
-      method: 'DELETE'
+      type: 'DELETE',
+      url: `/v1/notes/${id}`,
     });
   },
   
