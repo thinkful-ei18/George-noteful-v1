@@ -44,11 +44,11 @@ const noteful = (function () {
       api.details(noteId)
         .then(response => {
           store.currentNote = response;
-          render();
+          return render();
         });
+
     });
   }
-  
 
   function handleNoteStartNewSubmit() {
     $('.js-start-new-note-form').on('submit', event => {
@@ -98,15 +98,24 @@ const noteful = (function () {
 
       } else {
 
-        api.create(noteObj, updateResponse => {
-          store.currentNote = updateResponse;
+        // // api.create(noteObj, updateResponse => {
+        // //   store.currentNote = updateResponse;
 
-          api.search(store.currentSearchTerm, updateResponse => {
+        //   api.search(store.currentSearchTerm, updateResponse => {
+        //     store.notes = updateResponse;
+        //     render();
+        // //   });
+
+        // });
+
+        api.create(noteObj)
+          .then(updateResponse => {
+            store.currentNote = updateResponse;
+            return api.search(store.currentSearchTerm)
+          .then(updateResponse => {
             store.notes = updateResponse;
             render();
           });
-
-        });
       }
 
     });
