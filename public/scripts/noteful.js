@@ -133,28 +133,41 @@ const noteful = (function () {
     });
   }
 
-  function handleDeleteItemClicked() {
+  function handleNoteDeleteClick() {
     // this function will be responsible for when users want to delete a shopping list
-    $('.js-shopping-list').on('click', '.js-item-delete', event => {
-      console.log('`handleDeleteItemClicked` ran');
+    $('js-note-delete-button').on('click', event => {
+      console.log('handleNoteDeleteClicked ran');
       // grab current element's location, place into constant
-      const itemIndex = getItemIndexFromElement(event.currentTarget);
-      console.log(itemIndex);
+      const noteID = getNoteIdFromElement(event.currentTarget);
+
+      console.log(noteID);
+
+      api.delete(noteID)
+        .then(response => {
+          store.currentNote = response;
+
+          // need something to get this out of store
+          render();
+        });
       // delete item from array
       // 1. take STORE
       // 2. splice STORE
-      // 3. run renderShoppingList()
-      STORE.item.splice(itemIndex, 1);
-      renderShoppingList();
+      // // 3. run renderShoppingList()
+      // STORE.item.splice(itemIndex, 1);
+      // renderShoppingList();
+    
+
+    //api.delete(noteObj)
+    //.then
     });
   }
-  
+
   function bindEventListeners() {
     handleNoteItemClick();
     handleNoteSearchSubmit();
     handleNoteFormSubmit();
     handleNoteStartNewSubmit();
-    //handleNoteDeleteClick();
+    handleNoteDeleteClick();
   }
 
   // This object contains the only exposed methods from this module:
