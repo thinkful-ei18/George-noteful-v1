@@ -97,13 +97,14 @@ const noteful = (function () {
 
       } else {
 
-        api.create(noteObj, updateResponse => {
-          store.currentNote = updateResponse;
+        api.create(noteObj)
+          .then(updateResponse => {
+            store.currentNote = updateResponse;
 
-          api.search(store.currentSearchTerm, updateResponse => {
-            store.notes = updateResponse;
-            render();
-          });
+            api.search(store.currentSearchTerm, updateResponse => {
+              store.notes = updateResponse;
+              render();
+            });)
 
         });
       }

@@ -25,13 +25,14 @@ const api = {
     });
   },
   
-  details: function (id, callback) {
+  details: function (id) {
     $.ajax({
       type: 'GET',
       dataType: 'json',
       url: `/v1/notes/${id}`,
       success: callback
     });
+    .then()
   },
 
   update: function (id, obj, callback) {
